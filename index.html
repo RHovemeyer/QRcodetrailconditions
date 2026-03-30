@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twin Falls Trail Reports</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2d4a3e;
+            margin-bottom: 30px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .trail-btn {
+            background-color: #98fb98; /* Soft Mint Green */
+            color: #052c15; /* High Contrast Dark Text */
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .trail-btn:hover {
+            background-color: #76e076;
+            transform: translateY(-2px);
+        }
+
+        /* Modal / Form Overlay */
+        #form-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        h2 { margin-top: 0; color: #2d4a3e; }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            background-color: #2d4a3e;
+            color: white;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: none;
+            border: none;
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Trail Feedback</h1>
+    <div class="button-grid" id="button-grid"></div>
+
+    <div id="form-overlay">
+        <div class="form-container">
+            <h2 id="trail-title">Trail Name</h2>
+            <p>Enter your comments below:</p>
+            <textarea id="comment-box" placeholder="Tell us about the trail conditions..."></textarea>
+            <button class="submit-btn" onclick="sendMail()">SUBMIT COMMENT</button>
+            <button class="cancel-btn" onclick="closeForm()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const trails = [
+            "Falls Trail", "Cliffside Trail", "Huckleberry Trail", 
+            "Hemlock Trail", "Mcgraw Trail", "Still Run Trail", 
+            "Horsepen Trail", "Poke Hollow Trail", "Summit Trail", 
+            "Nature Trail", "Buck Run Trail", "Hickory Knob Trail", 
+            "Twin Oaks Trail"
+        ];
+
+        const grid = document.getElementById('button-grid');
+        const overlay = document.getElementById('form-overlay');
+        const trailTitle = document.getElementById('trail-title');
+        const commentBox = document.getElementById('comment-box');
+        let currentTrail = "";
+
+        // Create buttons dynamically
+        trails.forEach(trail => {
+            const btn = document.createElement('button');
+            btn.className = 'trail-btn';
+            btn.innerText = trail;
+            btn.onclick = () => openForm(trail);
+            grid.appendChild(btn);
+        });
+
+        function openForm(trail) {
+            currentTrail = trail;
+            trailTitle.innerText = trail;
+            overlay.style.display = 'flex';
+            commentBox.value = "";
+        }
+
+        function closeForm() {
+            overlay.style.display = 'none';
+        }
+
+        function sendMail() {
+            const comment = encodeURIComponent(commentBox.value);
+            const email = "twinfallstrails@gmail.com";
+            const subject = encodeURIComponent("Comment for " + currentTrail);
+            
+            // Constructing the mailto link
+            window.location.href = `mailto:${email}?subject=${subject}&body=${comment}`;
+            
+            closeForm();
+        }
+
+        // Close modal if user clicks outside the box
+        window.onclick = function(event) {
+            if (event.target == overlay) {
+                closeForm();
+            }
+        }
+    </script>
+</body>
+</html>
